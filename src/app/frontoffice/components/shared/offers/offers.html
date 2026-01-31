@@ -1,0 +1,104 @@
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="text-4xl font-bold text-slate-900 mb-4">Nos offres</h2>
+    <p class="text-slate-600 mb-12 max-w-2xl mx-auto">
+      Découvrez nos offres de haute qualité et abordables pour vos projets de grande ou petite taille.
+      Il y a forcément une offre pour vous !
+    </p>
+
+    <!-- Simplified Toggle Implementation for better colors -->
+    <div class="flex justify-center mb-16">
+        <div class="inline-flex bg-white border border-slate-100 rounded-lg p-1 shadow-sm">
+            <button (click)="toggleMode(true)"
+                    class="px-6 py-2.5 rounded-md text-sm font-medium transition-all"
+                    [class.text-blue-600]="isHighQuality()"
+                    [class.bg-blue-50]="isHighQuality()"
+                    [class.border]="isHighQuality()"
+                    [class.border-blue-200]="isHighQuality()"
+                    [class.text-slate-500]="!isHighQuality()">
+                High quality
+            </button>
+            <button (click)="toggleMode(false)"
+                    class="px-6 py-2.5 rounded-md text-sm font-medium transition-all ml-2"
+                    [class.bg-[#0EA5E9]]="!isHighQuality()"
+                    [class.text-white]="!isHighQuality()"
+                    [class.text-slate-500]="isHighQuality()">
+                Solutions low costs
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Pricing Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-center items-center max-w-7xl mx-auto">
+      @for (offer of (isHighQuality() ? highQualityOffers : lowCostOffers); track offer.title) {
+        <!-- Determining Active/Highlight Card -->
+        <!-- Logic: If LowCost, "Pro" is highlighted with Cyan. If HighQuality, "Pro" is highlighted with Blue? Or maybe Entreprise? Assuming Pro for now based on prev logic. -->
+        <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg hover:shadow-xl transition-shadow text-left flex flex-col h-full overflow-hidden relative"
+             [class.bg-[#0EA5E9]]="!isHighQuality() && offer.title === 'Pro'"
+             [class.text-white]="!isHighQuality() && offer.title === 'Pro'"
+
+             [class.bg-blue-600]="isHighQuality() && offer.title === 'Pro'"
+             [class.text-white-hq]="isHighQuality() && offer.title === 'Pro'"
+
+             [class.text-slate-900]="!((!isHighQuality() && offer.title === 'Pro') || (isHighQuality() && offer.title === 'Pro'))">
+
+          <h3 class="text-2xl font-bold mb-8"
+              [class.text-[#0EA5E9]]="!isHighQuality() && offer.title !== 'Pro'"
+              [class.text-blue-600]="isHighQuality() && offer.title !== 'Pro'"
+              [class.text-white]="(!isHighQuality() && offer.title === 'Pro') || (isHighQuality() && offer.title === 'Pro')">
+              {{ offer.title }}
+          </h3>
+
+          <ul class="space-y-4 mb-8 grow">
+            @for (spec of offer.specs; track spec) {
+              <li class="flex items-start gap-3 text-sm font-medium">
+                 <div class="mt-0.5 min-w-4"
+                      [class.text-[#0EA5E9]]="!isHighQuality() && offer.title !== 'Pro'"
+                      [class.text-blue-600]="isHighQuality() && offer.title !== 'Pro'"
+                      [class.text-white]="offer.title === 'Pro'">
+                   <ng-icon name="lucideCheck" class="w-4 h-4"></ng-icon>
+                 </div>
+                 <span [class.text-white]="offer.title === 'Pro'" [class.text-slate-600]="offer.title !== 'Pro'">{{ spec }}</span>
+              </li>
+            }
+          </ul>
+
+          <div class="mt-auto">
+            <div class="flex items-baseline gap-1 mb-6">
+                <!-- Price Text Color -->
+                <span class="text-3xl font-extrabold"
+                      [class.text-[#0EA5E9]]="!isHighQuality() && offer.title !== 'Pro'"
+                      [class.text-blue-600]="isHighQuality() && offer.title !== 'Pro'"
+                      [class.text-white]="offer.title === 'Pro'">
+                    {{ offer.price }}
+                </span>
+                <span class="text-sm font-medium"
+                      [class.text-slate-400]="offer.title !== 'Pro'"
+                      [class.text-blue-100]="isHighQuality() && offer.title === 'Pro'"
+                      [class.text-white]="!isHighQuality() && offer.title === 'Pro'"
+                      [class.opacity-80]="true">
+                    {{ offer.period }}
+                </span>
+            </div>
+
+            <button hlmBtn class="w-full font-semibold border-none"
+                    [class.bg-[#0EA5E9]]="!isHighQuality() && offer.title !== 'Pro'"
+                    [class.text-white]="!isHighQuality() && offer.title !== 'Pro'"
+                    [class.hover:bg-[#0284c7]]="!isHighQuality() && offer.title !== 'Pro'"
+
+                    [class.bg-white]="!isHighQuality() && offer.title === 'Pro'"
+                    [class.text-[#0EA5E9]]="!isHighQuality() && offer.title === 'Pro'"
+
+                    [class.bg-blue-600]="isHighQuality() && offer.title !== 'Pro'"
+
+                    [class.bg-white-hq]="isHighQuality() && offer.title === 'Pro'"
+                    [class.text-blue-600-hq]="isHighQuality() && offer.title === 'Pro'">
+              Commander
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

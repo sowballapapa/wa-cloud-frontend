@@ -1,0 +1,31 @@
+.bg-hero {
+  background-image: url('/assets/guest/images/hero_img.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Adjust background for mobile */
+@media (max-width: 768px) {
+  .bg-hero {
+    background-color: aliceblue;
+    background-size: contain;
+    background-position: top center;
+  }
+}
+
+/* Adjust background for tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .bg-hero {
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+
+ul li{
+  display: block;
+  text-align: start;
+  list-style-type: disc;
+  margin-bottom: 1rem;
+}

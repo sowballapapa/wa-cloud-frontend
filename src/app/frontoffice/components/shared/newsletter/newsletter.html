@@ -1,0 +1,69 @@
+<section class="py-0 bg-white relative overflow-hidden min-h-[500px]">
+  <div class="container mx-auto px-0 relative h-full">
+    <div class="flex flex-col lg:flex-row items-stretch min-h-[500px]">
+
+      <!-- Left Side - Full Image Section (3/5 width) -->
+      <div class="w-full lg:w-3/5 relative overflow-hidden">
+
+
+        <!-- Blue Diagonal Overlay -->
+        <div class="absolute inset-0  origin-left transform -skew-x-12 scale-110 z-10"></div>
+
+        <!-- Images Container - Woman + Trace side by side -->
+        <div class="relative z-20 h-full flex items-end justify-start pl-8 lg:pl-16 gap-0">
+          <img src="/assets/guest/images/newsletter_img.png" alt="Newsletter" class="h-full w-auto object-cover object-bottom">
+          <img src="/assets/guest/images/newsletter_trace.png" alt="Newsletter Trace" class="h-full w-auto object-cover object-bottom">
+        </div>
+
+      </div>
+
+      <!-- Right Side - Newsletter Form (2/5 width) -->
+      <div class="w-full lg:w-2/5 px-8 lg:px-20 py-12 lg:py-16 flex flex-col justify-center relative bg-white">
+        <!-- Floating Email Icons on Right Side -->
+        <div class="absolute top-1/5 left-8 w-14 h-14 bg-white rounded-xl shadow-xl p-3 animate-bounce delay-500 border border-slate-100">
+          <img src="/assets/guest/icones/newsletter_icone_1.png" alt="Email Icon" class="w-full h-full object-contain">
+        </div>
+
+        <div class="absolute top-4 right-8 w-16 h-16 bg-white rounded-xl shadow-xl p-3 animate-bounce delay-700 border border-slate-100">
+          <img src="/assets/guest/icones/newsletter_icone_2.png" alt="Email Icon" class="w-full h-full object-contain">
+        </div>
+
+        <div class="absolute bottom-1/3 right-4 w-12 h-12 bg-white rounded-lg shadow-xl p-2 animate-bounce border border-slate-100">
+          <img src="/assets/guest/icones/newsletter_icone_1.png" alt="Email Icon" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute bottom-2/5 left-0 w-16 h-16 bg-white rounded-xl shadow-xl p-3 animate-bounce delay-700 border border-slate-100">
+          <img src="/assets/guest/icones/newsletter_icone_2.png" alt="Email Icon" class="w-full h-full object-contain">
+        </div>
+
+        <div class="relative z-10 max-w-lg ps-6">
+          <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4">
+            Souscrivez à notre<br>
+            <span class="text-slate-900">newsletter !</span>
+          </h2>
+          <p class="text-slate-600 text-base lg:text-lg mb-8 leading-relaxed">
+            Souscrivez dès à présent à notre newsletter et restez informé sur notre actualité et nos différentes offres.
+          </p>
+
+          <form [formGroup]="newsletterForm" (ngSubmit)="subscribe()" class="flex flex-col gap-4">
+            <div class="relative">
+              <input
+                hlmInput
+                type="email"
+                formControlName="email"
+                placeholder="Email"
+                class="w-full bg-slate-50 border-slate-200 h-14 pl-4 pr-4 rounded-lg focus:ring-blue-500 text-base"
+              />
+            </div>
+            <button
+              hlmBtn
+              type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-14 rounded-lg text-base">
+              Souscrire aux newsletter
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
