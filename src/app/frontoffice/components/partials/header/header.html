@@ -2,14 +2,16 @@
   <div class="container mx-auto px-4 h-16 flex items-center justify-between">
     <!-- Logo -->
     <div class="flex items-center gap-2">
-      <a routerLink="/" class="text-2xl font-bold text-blue-600">WA-CLOUD</a>
+      <a routerLink="/" class="text-2xl font-bold text-blue-600">WA-CLOUD-TECH</a>
     </div>
 
     <!-- Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-6">
       @for (item of navItems; track item.path) {
-        <a [routerLink]="item.path"
-           class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+        <a
+          [routerLink]="item.path"
+          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
           {{ item.label }}
         </a>
       }
@@ -24,19 +26,22 @@
 
       @if (authService.isAuthenticated()) {
         <!-- Authenticated: Show user profile -->
-        <div class="flex items-center gap-2 cursor-pointer">
+        <a
+          routerLink="/dashboard"
+          class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+        >
           <hlm-avatar variant="small">
-            <span hlmAvatarFallback class="bg-blue-100 text-blue-600">{{ authService.getUserInitials() }}</span>
+            <span hlmAvatarFallback class="bg-blue-100 text-blue-600">{{
+              authService.getUserInitials()
+            }}</span>
           </hlm-avatar>
           <span class="text-sm font-medium">{{ authService.getUserFullName() }}</span>
-        </div>
+        </a>
       } @else {
         <!-- Not authenticated: Show login/register buttons -->
         <div class="flex items-center gap-2">
           <a routerLink="/login">
-            <button hlmBtn variant="ghost" size="sm">
-              Connexion
-            </button>
+            <button hlmBtn variant="ghost" size="sm">Connexion</button>
           </a>
           <a routerLink="/register">
             <button hlmBtn size="sm" class="bg-blue-600 hover:bg-blue-700 text-white">
@@ -51,18 +56,21 @@
     <div class="md:hidden">
       <hlm-sheet side="left">
         <button hlmBtn variant="ghost" size="icon" hlmSheetTrigger>
-            <ng-icon hlm name="lucideMenu" class="w-6 h-6" />
+          <ng-icon hlm name="lucideMenu" class="w-6 h-6" />
         </button>
-        <hlm-sheet-content *brnSheetContent="let ctx">
+        <hlm-sheet-content class="ps-4" *brnSheetContent="let ctx">
           <hlm-sheet-header>
-            <h3 hlmSheetTitle class="text-2xl font-bold text-blue-600">WA-CLOUD</h3>
+            <h3 hlmSheetTitle class="text-2xl font-bold text-blue-600">WA-CLOUD-TECH</h3>
             <p hlmSheetDescription>Menu Principal</p>
           </hlm-sheet-header>
 
-          <div class="flex flex-col gap-4 mt-8">
+          <div class="flex flex-col gap-4 ms-4 mt-8">
             @for (item of navItems; track item.path) {
-              <a [routerLink]="item.path"
-                 class="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border">
+              <a
+                [routerLink]="item.path"
+                hlmSheetClose
+                class="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border"
+              >
                 {{ item.label }}
               </a>
             }
@@ -70,27 +78,40 @@
 
           @if (authService.isAuthenticated()) {
             <!-- Authenticated: Show user profile -->
-            <hlm-sheet-footer class="mt-auto">
-              <div class="flex items-center gap-2 p-4 bg-muted rounded-lg w-full">
-                <hlm-avatar variant="small">
-                  <span hlmAvatarFallback class="bg-blue-100 text-blue-600">{{ authService.getUserInitials() }}</span>
-                </hlm-avatar>
-                <div class="flex flex-col">
-                  <span class="text-sm font-medium">{{ authService.getUserFullName() }}</span>
-                  <span class="text-xs text-muted-foreground">Mon Compte</span>
+            <hlm-sheet-footer class="mt-auto flex-col gap-2">
+              <a routerLink="/dashboard" hlmSheetClose class="w-full">
+                <div
+                  class="flex items-center gap-2 p-4 bg-muted rounded-lg w-full hover:bg-muted/80 transition-colors"
+                >
+                  <hlm-avatar variant="small">
+                    <span hlmAvatarFallback class="bg-blue-100 text-blue-600">{{
+                      authService.getUserInitials()
+                    }}</span>
+                  </hlm-avatar>
+                  <div class="flex flex-col text-left">
+                    <span class="text-sm font-medium">{{ authService.getUserFullName() }}</span>
+                    <span class="text-xs text-muted-foreground">Tableau de bord</span>
+                  </div>
                 </div>
-              </div>
+              </a>
+              <button
+                hlmBtn
+                variant="ghost"
+                hlmSheetClose
+                class="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                (click)="logout()"
+              >
+                Déconnexion
+              </button>
             </hlm-sheet-footer>
           } @else {
             <!-- Not authenticated: Show login/register buttons -->
             <hlm-sheet-footer class="mt-auto">
               <div class="flex flex-col gap-2 w-full">
-                <a routerLink="/login" class="w-full">
-                  <button hlmBtn variant="outline" class="w-full">
-                    Connexion
-                  </button>
+                <a routerLink="/login" hlmSheetClose class="w-full">
+                  <button hlmBtn variant="outline" class="w-full">Connexion</button>
                 </a>
-                <a routerLink="/register" class="w-full">
+                <a routerLink="/register" hlmSheetClose class="w-full">
                   <button hlmBtn class="w-full bg-blue-600 hover:bg-blue-700 text-white">
                     S'inscrire
                   </button>

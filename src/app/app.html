@@ -1,3 +1,16 @@
 <main class="min-h-screen bg-white">
-  <router-outlet></router-outlet>
+  @switch (errorService.errorType()) {
+    @case (401) {
+      <app-error401></app-error401>
+    }
+    @case (403) {
+      <app-error403></app-error403>
+    }
+    @case (404) {
+      <app-error404></app-error404>
+    }
+    @default {
+      <router-outlet></router-outlet>
+    }
+  }
 </main>

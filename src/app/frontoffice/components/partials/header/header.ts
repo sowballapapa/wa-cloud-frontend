@@ -48,7 +48,7 @@ export class HeaderComponent {
     { label: 'Accueil', path: '/' },
     { label: 'Hébergement', path: '/hosting' },
     { label: 'Domaines', path: '/domains' },
-    { label: 'Solution WA-CLOUD', path: '/solutions' },
+    { label: 'Solution WA-CLOUD-TECH', path: '/solutions' },
     { label: 'A Propos', path: '/about' },
     { label: 'FAQ', path: '/faq' },
   ];

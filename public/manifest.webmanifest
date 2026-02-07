@@ -1,6 +1,6 @@
 {
-  "name": "wa-cloud-frontend",
-  "short_name": "wa-cloud-frontend",
+  "name": "West African Cloud Technologies",
+  "short_name": "WA-Cloud-Tech",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

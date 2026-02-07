@@ -1,10 +1,23 @@
 import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../interfaces/response';
 
 export interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  role?: string;
+}
+
+export interface AuthResponse {
+  token?: string;
+  user?: User;
+  requires_2fa?: boolean;
+  user_id?: string;
+  email?: string;
 }
 
 @Injectable({
@@ -13,12 +26,15 @@ export interface User {
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
+  private readonly TWO_FA_USER_ID_KEY = '2fa_user_id';
+  private readonly TWO_FA_EMAIL_KEY = '2fa_email';
+  private readonly API_URL = environment.apiUrl;
 
   // Signal to track authentication state
   isAuthenticated = signal<boolean>(false);
   currentUser = signal<User | null>(null);
 
-  constructor() {
+  constructor(private http: HttpClient) {
     // Check authentication status on service initialization
     this.checkAuthStatus();
   }
@@ -30,18 +46,12 @@ export class AuthService {
     const token = this.getToken();
 
     if (token) {
-      // Validate token (you can add JWT validation here)
-      const isValid = this.validateToken(token);
-
-      if (isValid) {
-        // Load user data
-        const userData = this.getUserData();
+      // Load user data
+      const userData = this.getUserData();
+      if (userData) {
         this.currentUser.set(userData);
         this.isAuthenticated.set(true);
         return true;
-      } else {
-        // Token invalid, clear storage
-        this.clearAuth();
       }
     }
 
@@ -54,15 +64,7 @@ export class AuthService {
    * Get token from localStorage or sessionStorage
    */
   getToken(): string | null {
-    // Try localStorage first
-    let token = localStorage.getItem(this.TOKEN_KEY);
-
-    // If not in localStorage, try sessionStorage
-    if (!token) {
-      token = sessionStorage.getItem(this.TOKEN_KEY);
-    }
-
-    return token;
+    return localStorage.getItem(this.TOKEN_KEY) || sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   /**
@@ -84,39 +86,100 @@ export class AuthService {
   }
 
   /**
-   * Validate token (basic validation - extend with JWT validation)
+   * Login user via API
    */
-  private validateToken(token: string): boolean {
-    // Basic validation: check if token exists and is not empty
-    if (!token || token.trim() === '') {
-      return false;
-    }
-
-    // TODO: Add JWT validation here
-    // For now, just check if token exists
-    // You can decode JWT and check expiration:
-    // try {
-    //   const payload = JSON.parse(atob(token.split('.')[1]));
-    //   const exp = payload.exp * 1000; // Convert to milliseconds
-    //   return Date.now() < exp;
-    // } catch {
-    //   return false;
-    // }
-
-    return true;
+  login(credentials: any): Observable<ApiResponse<AuthResponse>> {
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.API_URL}/auth/login`, credentials).pipe(
+      tap(response => {
+        const data = response.data;
+        if (data.requires_2fa) {
+          localStorage.setItem(this.TWO_FA_USER_ID_KEY, data.user_id!);
+          localStorage.setItem(this.TWO_FA_EMAIL_KEY, data.email!);
+        } else if (data.token) {
+          this.handleAuthResponse(data);
+        }
+      })
+    );
   }
 
   /**
-   * Login user and store token
+   * Verify 2FA code
    */
-  login(token: string, user: User, rememberMe: boolean = false): void {
-    const storage = rememberMe ? localStorage : sessionStorage;
+  verify2fa(code: string): Observable<ApiResponse<AuthResponse>> {
+    const userId = localStorage.getItem(this.TWO_FA_USER_ID_KEY);
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.API_URL}/auth/verify-2fa`, { user_id: userId, code }).pipe(
+      tap(response => {
+        const data = response.data;
+        if (data.token) {
+          this.clear2faSteps();
+          this.handleAuthResponse(data);
+        }
+      })
+    );
+  }
 
-    storage.setItem(this.TOKEN_KEY, token);
-    storage.setItem(this.USER_KEY, JSON.stringify(user));
+  /**
+   * Resend 2FA code
+   */
+  resend2faCode(): Observable<ApiResponse<any>> {
+    const userId = localStorage.getItem(this.TWO_FA_USER_ID_KEY);
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/auth/resend-2fa`, { user_id: userId });
+  }
+
+  /**
+   * Get 2FA info
+   */
+  get2faInfo() {
+    return {
+      userId: localStorage.getItem(this.TWO_FA_USER_ID_KEY),
+      email: localStorage.getItem(this.TWO_FA_EMAIL_KEY)
+    };
+  }
+
+  /**
+   * Clear 2FA temporary data
+   */
+  clear2faSteps(): void {
+    localStorage.removeItem(this.TWO_FA_USER_ID_KEY);
+    localStorage.removeItem(this.TWO_FA_EMAIL_KEY);
+  }
+
+  /**
+   * Register user via API
+   */
+  register(userData: any): Observable<ApiResponse<AuthResponse>> {
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.API_URL}/auth/register`, userData).pipe(
+      tap(response => this.handleAuthResponse(response.data))
+    );
+  }
+
+  /**
+   * Forgot password request
+   */
+  forgotPassword(email: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/auth/forgot-password`, { email });
+  }
+
+  /**
+   * Reset password request
+   */
+  resetPassword(data: any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/auth/reset-password`, data);
+  }
+
+  /**
+   * Handle authentication response (store token and user data)
+   */
+  private handleAuthResponse(response: AuthResponse): void {
+    if (response.token) {
+      localStorage.setItem(this.TOKEN_KEY, response.token);
+    }
+    if (response.user) {
+      localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+    }
 
     this.isAuthenticated.set(true);
-    this.currentUser.set(user);
+    this.currentUser.set(response.user || null);
   }
 
   /**
