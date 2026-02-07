@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:8000/api'
+    apiUrl: 'https://laughing-noether.213-136-85-46.plesk.page/api'
 };
