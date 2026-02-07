@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideGithub, lucideEye, lucideEyeOff, lucideRefreshCw } from '@ng-icons/lucide';
+import { lucideGithub, lucideEye, lucideEyeOff, lucideRefreshCw, lucideArrowLeft } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { AuthService } from '../../../../../core/services/auth-service';
@@ -12,7 +12,7 @@ import { AuthService } from '../../../../../core/services/auth-service';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink, NgIcon, HlmButton, HlmInput],
-  providers: [provideIcons({ lucideGithub, lucideEye, lucideEyeOff, lucideRefreshCw })],
+  providers: [provideIcons({ lucideGithub, lucideEye, lucideEyeOff, lucideRefreshCw, lucideArrowLeft })],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
